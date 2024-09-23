@@ -1,14 +1,12 @@
-const port = process.env.PORT || 3000;
-const host = process.env.HOST || '127.0.0.1';
-const dotenv = require('dotenv');
-const app = require('./app');
+const port = process.env.PORT || 8800;
+const host = process.env.HOST || "127.0.0.1";
+const app = require("./app");
+const dotenv = require("dotenv");
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: "./config.env" });
 
 console.log(process.env);
 
-if (process.env.NODE_ENV === 'dev') {
-}
 app.listen(port, host, () => {
   console.log(`App running on port ${port}`);
 });
