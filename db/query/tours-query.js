@@ -7,12 +7,7 @@ const getTour = () => {
           where id = ?`;
 };
 const createTour = () => {
-  return `insert into tours 
-  (name,duration,maxGroupSize,difficulty,ratingsAverage,
-  ratingQuantity,price,summary,description,imageCover,
-  images,startDates)
-  values (?,?,?,?,?,?,?,?,?,?,?,?)
-  `;
+  return `insert into tours set ?`;
 };
 const deleteTour = () => {
   return `delete from tours where id = ?`;
@@ -22,7 +17,7 @@ const updateTour = () => {
 };
 const getTourStats = () => {
   return `select id,
-  sum(ratingQuantity) as numRatings,
+  sum(ratingsQuantity) as numRatings,
   count(*) as numTours,
   avg(ratingsAverage) as avgRating,
   avg(price) as avgPrice,
@@ -30,7 +25,7 @@ const getTourStats = () => {
   max(price) as maxPrice
   from tours
   where ratingsAverage > 4.5
-  group by id,ratingQuantity, price, ratingsAverage 
+  group by id,ratingsQuantity, price, ratingsAverage 
   `;
 };
 const getMonthlyPlan = () => {
@@ -47,5 +42,5 @@ module.exports = {
   deleteTour,
   updateTour,
   getTourStats,
-  getMonthlyPlan,
+  getMonthlyPlan
 };

@@ -1,7 +1,7 @@
 const pool = require("../lib/dbPool");
-const bcrypt = require("bcryptjs");
 const tourQuery = require("../db/query/tours-query");
 const catchAsync = require("../util/catch-async");
+
 const AppError = require("../util/error");
 // const __checkBody = (req, res, next, value) => {
 //   const { name, price } = req.params;
@@ -34,60 +34,72 @@ const getAllTours = catchAsync(async (req, res) => {
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: result,
+    data: result
   });
 });
-const getTour = catchAsync(async (req, res) => {
+const getTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const [result] = await pool.query(tourQuery.getTour(), [id]);
+
+  if (result.length == 0) {
+    return next(new AppError(`not found tour, check id ${id}`, 404));
+  }
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: result,
+    data: result
   });
 });
 const createTour = catchAsync(async (req, res) => {
   const bodies = req.body || {};
-  const params = [
-    bodies.name,
-    bodies.duration,
-    bodies.maxGroupSize,
-    bodies.difficulty,
-    bodies.ratingsAverage,
-    bodies.ratingQuantity,
-    bodies.price,
-    bodies.summary,
-    bodies.description,
-    bodies.imageCover,
-    JSON.stringify(bodies.images),
-    JSON.stringify(bodies.startDates),
-  ];
-  const [result] = await pool.query(tourQuery.createTour(), params);
+  // const params = [
+  //   bodies.name,
+  //   bodies.duration,
+  //   bodies.maxGroupSize,
+  //   bodies.difficulty,
+  //   bodies.ratingsAverage,
+  //   bodies.ratingsQuantity,
+  //   bodies.price,
+  //   bodies.summary,
+  //   bodies.description,
+  //   bodies.imageCover,
+  //   JSON.stringify(bodies.images),
+  //   JSON.stringify(bodies.startDates)
+  // ];
+  bodies.images = JSON.stringify(bodies.images);
+  bodies.startDates = JSON.stringify(bodies.startDates);
+  const [result] = await pool.query(tourQuery.createTour(), bodies);
 
-  console.log(req.body);
+  // console.log(req.body);
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: result.insertId,
+    data: result.insertId
   });
 });
 const updateTour = catchAsync(async (req, res) => {
   const { id } = req.params;
   const [result] = await pool.query(tourQuery.updateTour(), [id]);
-  console.log(req.body);
+  // console.log(req.body);
+  if (result.length == 0) {
+    return next(new AppError(`not found tour, check id ${id}`, 404));
+  }
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: null,
+    data: null
   });
 });
 const deleteTour = catchAsync(async (req, res) => {
   const { id } = req.params;
   const [result] = await pool.query(tourQuery.deleteTour(), [id]);
+  if (result.length == 0) {
+    return next(new AppError(`not found tour, check id ${id}`, 404));
+  }
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: null,
+    data: null
   });
 });
 const aliasTopTours = (req, res, next) => {
@@ -103,7 +115,7 @@ const getTourStats = async (req, res) => {
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: result,
+    data: result
   });
 };
 const getMonthlyPlan = async (req, res) => {
@@ -112,7 +124,7 @@ const getMonthlyPlan = async (req, res) => {
   res.status(200).json({
     status: "success",
     requestTime: req.requestTime,
-    data: result,
+    data: result
   });
 };
 module.exports = {
@@ -123,5 +135,5 @@ module.exports = {
   deleteTour,
   aliasTopTours,
   getTourStats,
-  getMonthlyPlan,
+  getMonthlyPlan
 };

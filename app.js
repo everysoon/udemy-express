@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const AppError = require("./util/error");
-
+const errorController = require("./controllers/error-controller");
 // const morgan = require('morgan');
 // 1. middleware
 // app.use(morgan('dev'));
@@ -11,10 +11,11 @@ app.use(express.json());
 // static file setting
 app.use(express.static(`${__dirname}/public`));
 // custom my middleware
-// app.use((req, res, next) => {
-//   req.requestTime = new Date().toISOString();
-//   next();
-// });
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  // console.log(req.headers);
+  next();
+});
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -34,6 +35,7 @@ app.all("*", (req, res, next) => {
   // err.statusCode = 404;
   next(new AppError(`Can\'t find ${req.originalUrl} on this Server`, 404));
 });
+app.use(errorController);
 // error handle middleware
 app.use(require("./route/error"));
 // 4. start server
