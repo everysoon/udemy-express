@@ -20,10 +20,32 @@ const deleteTour = () => {
 const updateTour = () => {
   return `update tours set`;
 };
+const getTourStats = () => {
+  return `select id,
+  sum(ratingQuantity) as numRatings,
+  count(*) as numTours,
+  avg(ratingsAverage) as avgRating,
+  avg(price) as avgPrice,
+  min(price) as minPrice,
+  max(price) as maxPrice
+  from tours
+  where ratingsAverage > 4.5
+  group by id,ratingQuantity, price, ratingsAverage 
+  `;
+};
+const getMonthlyPlan = () => {
+  return `select id,
+  count(*) as numTourStarts,
+  
+  limit 12
+  `;
+};
 module.exports = {
   getAllTours,
   getTour,
   createTour,
   deleteTour,
   updateTour,
+  getTourStats,
+  getMonthlyPlan,
 };

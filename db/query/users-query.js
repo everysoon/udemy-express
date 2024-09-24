@@ -13,10 +13,10 @@ const createUser = () => {
   `;
 };
 const deleteUser = () => {
-  return `delete from users where id = ?`;
+  return `update users set active = false where id = ?`;
 };
 const updateUser = () => {
-  return `update users set name = ?, photo = ? where id = ?`;
+  return `update users set name = ?, email = ? where id = ?`;
 };
 module.exports = {
   getAllUsers,

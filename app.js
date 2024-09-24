@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const mysql = require("mysql");
+const path = require("path");
 const AppError = require("./util/error");
 
 // const morgan = require('morgan');
@@ -11,10 +11,13 @@ app.use(express.json());
 // static file setting
 app.use(express.static(`${__dirname}/public`));
 // custom my middleware
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-});
+// app.use((req, res, next) => {
+//   req.requestTime = new Date().toISOString();
+//   next();
+// });
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 // 2. api route handle
 // 3. router setting
 app.use("/api/v1/tours", require("./route/tours"));
